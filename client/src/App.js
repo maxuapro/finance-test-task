@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 // socket
 import io from 'socket.io-client';
 
@@ -16,6 +16,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+// redux
+import { useDispatch, useSelector } from 'react-redux';
+import { anotherDataPortion } from './redux/action';
 
 const socket = io('http://localhost:4000');
 
@@ -29,7 +32,9 @@ const tickerColors = [
 ];
 
 function App() {
-	const [data, setData] = useState([]);
+	// const [data, setData] = useState([]);
+	const data = useSelector((state) => state.fineData);
+	const dispatch = useDispatch();
 
 	useEffect(() => {
 		socket.on('connect', () => {
@@ -39,10 +44,11 @@ function App() {
 	}, []);
 
 	socket.on('ticker', (data) => {
-		setData(data);
+		console.log('got ticker');
+		dispatch(anotherDataPortion(data));
 	});
 
-	console.log('data is:', data[0]);
+	console.log('App load---', data.data);
 
 	return (
 		<div>
